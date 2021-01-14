@@ -1,0 +1,12 @@
+---
+
+ENV: production
+DEBUG: false
+
+LISTEN_PORT: 9100
+LISTEN_HOST: "0.0.0.0"
+
+MODULE_CONFIG:
+  url: https://git.wabbit
+  auth:
+    token: sometoken
