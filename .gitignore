@@ -5,3 +5,5 @@ config.yml
 __pycache__/
 
 *.pyc
+
+*.crt
