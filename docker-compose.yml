@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  gitea:
+    image: "gitea/gitea"
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: "gitea_database:5432"
+      DB_NAME: gitea
+      DB_USER: gitea
+      DB_PASSWD: "changeit"
+    networks:
+      - gitea
+    volumes:
+      - /app/gitea/data:/data
+    depends_on:
+      - gitea_database
+
+  gitea_database:
+    image: "postgres"
+    environment:
+      POSTGRES_USER: gitea
+      POSTGRES_PASSWORD: "changeit"
+      POSTGRES_DB: gitea
+    networks:
+      - gitea
+    volumes:
+      - /app/gitea/database:/var/lib/postgresql/data
+
+  gitea_exporter:
+    image: "gitea-exporter:latest"
+    configs:
+      - source: gitea_exporter
+        target: /app/config.yml
+    networks:
+      - gitea
+
+configs:
+  gitea_exporter:
+    name: gitea-exporter-config
+    file: ./config.yml
+
+networks:
+  gitea:
