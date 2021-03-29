@@ -48,6 +48,7 @@ def module(app):
       GAUGES['repo_branches']._metrics.clear()
       GAUGES['repo_forks']._metrics.clear()
       GAUGES['repo_issues']._metrics.clear()
+
       for repo in gitea_metrics['repos']:
         GAUGES['repo'].labels(name=repo.name, owner=repo.owner.username).set(1)
         GAUGES['repo_size'].labels(name=repo.name, owner=repo.owner.username, unit="bytes").set(repo.size)

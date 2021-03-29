@@ -1,22 +1,15 @@
-from gitea import *
-
-def get_repo_commit_count(gitea, repo):
-  page_endpoint = Repository.REPO_COMMITS % (repo.owner.username, repo.name)
-
-  response = gitea.requests.get(gitea.url + "/api/v1" + page_endpoint + "?limit=1", headers=gitea.headers, params={})
-
-  if 'X-Total' in response.headers:
-    return int(response.headers.get('X-Total'))
-  else:
-    return 0
+from lib.gitea import Gitea
 
 def gitea_export(app):
   metrics = dict()
 
+  print("========== Scraping Start ==========")
+
   try:
     gitea = Gitea(app.config['MODULE_CONFIG']['url'], app.config['MODULE_CONFIG']['auth']['token'])
-    gitea.get_version()
+    print(gitea.get_version())
   except Exception as e:
+    print(e)
     print("[WARNING] Unable to initiate connection with gitea.")
     return metrics
 
@@ -33,7 +26,6 @@ def gitea_export(app):
     print(e)
     print("[WARNING] Unable to retrieve 'Gitea Users'.")
     metrics['orgs'] = dict()
-
 
   metrics['repos'] = []
 
@@ -54,7 +46,7 @@ def gitea_export(app):
   try:
     for repo in metrics['repos']:
       repo.branches_count = len(repo.get_branches()) if not repo.empty else 0
-      repo.commits_count = get_repo_commit_count(gitea, repo) if not repo.empty else 0
+      repo.commits_count = repo.get_commit_count() if not repo.empty else 0
   except Exception as e:
     print(e)
     print("[WARNING] Unable to retrieve 'Gitea repos git infos'.")
