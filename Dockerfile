@@ -7,6 +7,7 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 COPY api api
+COPY lib lib
 COPY prometheus-exporter.py .
 COPY config.yml.exemple config.yml
 
